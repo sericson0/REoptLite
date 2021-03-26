@@ -115,7 +115,7 @@ function REoptInputs(s::Scenario)
     # levelization_factor = DenseAxisArray([0.9539], techs)
     # levelization_factor = DenseAxisArray([0.9539, 1.0], techs)  # w/generator
     time_steps_with_grid, time_steps_without_grid, = setup_electric_utility_inputs(s)
-    
+
     if any(pv.existing_kw > 0 for pv in s.pvs)
         adjust_load_profile(s, production_factor)
     end
@@ -176,6 +176,11 @@ function setup_tech_inputs(s::Scenario)
         push!(gentechs, "Generator")
     end
 
+    #Added Wind
+    if s.wind.max_kw > 0
+        push!(techs, "Wind")
+    end
+
     time_steps = 1:length(s.electric_load.loads_kw)
 
     # REoptInputs indexed on techs:
@@ -199,6 +204,11 @@ function setup_tech_inputs(s::Scenario)
 
     if "Generator" in techs
         setup_gen_inputs(s, max_sizes, min_sizes, existing_sizes, cap_cost_slope, om_cost_per_kw, production_factor)
+    end
+
+    #Added Wind
+    if "Wind" in techs
+        setup_wind_inputs(s, time_steps, max_sizes, min_sizes, existing_sizes, cap_cost_slope, om_cost_per_kw, production_factor)
     end
 
     return techs, pvtechs, gentechs, pv_to_location, maxsize_pv_locations, pvlocations, production_factor,
@@ -270,7 +280,7 @@ function setup_pv_inputs(s::Scenario, max_sizes, min_sizes,
             macrs_itc_reduction = pv.macrs_itc_reduction,
             rebate_per_kw = pv.total_rebate_per_kw
         )
-        
+
         om_cost_per_kw[pv.name] = pv.om_cost_per_kw
     end
 
@@ -300,6 +310,33 @@ function setup_gen_inputs(s::Scenario, max_sizes, min_sizes, existing_sizes,
     return nothing
 end
 
+#Added Wind
+function setup_wind_inputs(s::Scenario, time_steps, max_sizes, min_sizes, existing_sizes,
+    cap_cost_slope, om_cost_per_kw, production_factor)
+
+    max_sizes["Wind"] = s.wind.max_kw
+    min_sizes["Wind"] = s.wind.existing_kw + s.wind.min_kw
+    existing_sizes["Wind"] = s.wind.existing_kw
+    cap_cost_slope["Wind"] = s.wind.cost_per_kw
+    om_cost_per_kw["Wind"] = s.wind.om_cost_per_kw
+    time_steps_per_hour = round(length(time_steps)/8760; digits = 2)
+    production_factor["Wind", :] = sam_wind_prod_factors(s.wind, time_steps_per_hour, s.site.latitude, s.site.longitude)
+
+    cap_cost_slope["Wind"] = effective_cost(;
+        itc_basis= s.wind.cost_per_kw,
+        replacement_cost=0.0,
+        replacement_year=s.financial.analysis_years,
+        discount_rate=s.financial.owner_discount_pct,
+        tax_rate=s.financial.owner_tax_pct,
+        itc= s.wind.total_itc_pct,
+        macrs_schedule = s.wind.macrs_option_years == 7 ? s.financial.macrs_seven_year : s.financial.macrs_five_year,
+        macrs_bonus_pct= s.wind.macrs_bonus_pct,
+        macrs_itc_reduction = s.wind.macrs_itc_reduction,
+        rebate_per_kw = s.wind.total_rebate_per_kw
+    )
+
+    return nothing
+end
 
 function setup_present_worth_factors(s::Scenario, techs::Array{String, 1}, pvtechs::Array{String, 1})
 
@@ -314,6 +351,10 @@ function setup_present_worth_factors(s::Scenario, techs::Array{String, 1}, pvtec
     end
     if "Generator" in techs
         lvl_factor["Generator"] = 1
+    end
+    #Added Wind
+    if "Wind" in techs
+        lvl_factor["Wind"] = 1
     end
 
     pwf_e = annuity(
@@ -370,7 +411,7 @@ function adjust_load_profile(s::Scenario, production_factor::DenseAxisArray)
             s.electric_load.loads_kw .+= pv.existing_kw * production_factor[pv.name, :].data
         end end
     end
-    
+
     if s.electric_load.critical_loads_kw_is_net
         for pv in s.pvs if pv.existing_kw > 0
             s.electric_load.critical_loads_kw .+= pv.existing_kw * production_factor[pv.name, :].data

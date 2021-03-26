@@ -1,0 +1,38 @@
+
+{
+    "Site": {
+        "latitude": 39.91065, 
+        "longitude": -105.2348
+    },
+    "PV": {
+        "max_kw": 0
+        },
+    "ElectricLoad": {
+        "annual_kwh": 10000000.0,
+        "doe_reference_name": "MediumOffice",
+        "city": "Boulder"
+    },
+    "ElectricTariff": {
+        "monthly_energy_rates": [0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2],
+        "monthly_demand_rates": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        "NEM":true
+    },
+    "Financial": {
+        "om_cost_escalation_pct": 0.001,
+        "elec_cost_escalation_pct": 0.006,
+        "offtaker_discount_pct": 0.07 ,
+        "offtaker_tax_pct": 0.0,
+        "analysis_years": 25,
+        "owner_discount_pct": 0.07,
+        "owner_tax_pct": 0.0
+    },
+    "Wind": {
+    "cost_per_kw": 1874.0,
+    "om_cost_per_kw": 35.0,
+    "macrs_bonus_pct": 0.0,
+    "max_kw": 10000.0,
+    "total_itc_pct": 0.0,
+    "macrs_option_years": 5,
+    "size_class": "large"
+    }
+}

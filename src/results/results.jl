@@ -41,17 +41,22 @@ function reopt_results(m::JuMP.AbstractModel, p::REoptInputs; _n="")
 	if !isempty(p.pvtechs)
         add_pv_results(m, p, d; _n)
 	end
-	
+
 	time_elapsed = time() - tstart
 	@info "Base results processing took $(round(time_elapsed, digits=3)) seconds."
-	
+
 	if !isempty(p.gentechs) && isempty(_n)  # generators not included in multinode model
         tstart = time()
 		add_generator_results(m, p, d)
         time_elapsed = time() - tstart
         @info "Generator results processing took $(round(time_elapsed, digits=3)) seconds."
 	end
-	
+
+	#Added Wind
+	if "Wind" in p.techs
+		add_wind_results(m, p, d)
+	end
+
 	if !isempty(p.elecutil.outage_durations) && isempty(_n)  # outages not included in multinode model
         tstart = time()
 		add_outage_results(m, p, d)

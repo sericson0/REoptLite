@@ -36,6 +36,7 @@ struct Scenario
     electric_utility::ElectricUtility
     financial::Financial
     generator::Generator
+    wind::Wind
 end
 
 """
@@ -67,9 +68,9 @@ end
 """
 function Scenario(d::Dict)
     # TODO add validate! functions for each input struct
-    
+
     site = Site(;dictkeys_tosymbols(d["Site"])...)
-    
+
     pvs = PV[]
     if haskey(d, "PV")
         if typeof(d["PV"]) <: AbstractArray
@@ -111,7 +112,7 @@ function Scenario(d::Dict)
 
     electric_load = ElectricLoad(; dictkeys_tosymbols(d["ElectricLoad"])...)
 
-    electric_tariff = ElectricTariff(; dictkeys_tosymbols(d["ElectricTariff"])..., 
+    electric_tariff = ElectricTariff(; dictkeys_tosymbols(d["ElectricTariff"])...,
                                        year=electric_load.year
                                     )
 
@@ -121,15 +122,62 @@ function Scenario(d::Dict)
         generator = Generator(; max_kw=0)
     end
 
+    #________________________________________________________________________
+    #Added Wind
+    if haskey(d, "Wind")
+        size_class_to_hub_height = Dict(
+            "residential"=> 20,
+            "commercial"=> 40,
+            "medium"=> 60,  # Owen Roberts provided 50m for medium size_class, but Wind Toolkit has increments of 20m
+            "large"=> 80
+        )
+        size_class_to_installed_cost = Dict(
+            "residential"=> 11950.0,
+            "commercial"=> 7390.0,
+            "medium"=> 4440.0,
+            "large"=> 3450.0
+        )
+
+        size_class_to_itc_incentives = Dict(
+            "residential"=> 0.3,
+            "commercial"=> 0.3,
+            "medium"=> 0.12,
+            "large"=> 0.12
+        )
+
+        if haskey(d["Wind"], "size_class")
+            size_class = d["Wind"]["size_class"]
+        else
+            size_class = "large"
+        end
+
+        if !haskey(d["Wind"], "hub_height_meters")
+            d["Wind"]["hub_height_meters"] = size_class_to_hub_height[size_class]
+        end
+        if !haskey(d["Wind"], "cost_per_kw")
+            d["Wind"]["cost_per_kw"] = size_class_to_installed_cost[size_class]
+        end
+        #TODO keep getting weird inexact error saying input is Int64.
+        # if !haskey(d["Wind"], "total_itc_pct")
+        #     d["Wind"]["total_itc_pct"] = size_class_to_itc_incentives[size_class]
+        # end
+        wind = Wind(; dictkeys_tosymbols(d["Wind"])...)
+    else
+        wind = Wind(; max_kw=0)
+    end
+    #__________________________________________________________________________
+
     return Scenario(
-        site, 
-        pvs, 
-        storage, 
-        electric_tariff, 
-        electric_load, 
-        electric_utility, 
+        site,
+        pvs,
+        storage,
+        electric_tariff,
+        electric_load,
+        electric_utility,
         financial,
-        generator
+        generator,
+        #Added Wind
+        wind,
     )
 end
 

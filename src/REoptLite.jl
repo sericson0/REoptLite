@@ -41,7 +41,10 @@ export
     Financial,
     add_financial_results,
     ElectricUtility,
-    Generator
+    Generator,
+    #Added Wind
+    Wind,
+    sam_wind_prod_factors
 
 import HTTP
 import JSON
@@ -50,6 +53,7 @@ using JuMP.Containers: DenseAxisArray
 using Logging
 using DelimitedFiles
 using Dates
+using PyCall #Added Wind for prodfactor calculations
 import MathOptInterface
 import Dates: daysinmonth, Date, isleapyear
 const MOI = MathOptInterface
@@ -63,9 +67,13 @@ include("core/financial.jl")
 include("core/pv.jl")
 include("core/storage.jl")
 include("core/generator.jl")
+#Added Wind
+include("core/wind.jl")
 include("core/electric_load.jl")
 include("core/electric_utility.jl")
 include("core/prodfactor.jl")
+#Added Wind
+include("core/wind_prodfactor.jl")
 include("core/urdb.jl")
 include("core/electric_tariff.jl")
 include("core/scenario.jl")
@@ -86,6 +94,8 @@ include("results/generator.jl")
 include("results/pv.jl")
 include("results/storage.jl")
 include("results/outages.jl")
+#Added Wind
+include("results/wind.jl")
 
 include("core/reopt.jl")
 include("core/reopt_multinode.jl")

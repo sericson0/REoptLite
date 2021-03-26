@@ -52,4 +52,10 @@ function add_tech_size_constraints(m, p; _n="")
     @constraint(m, [t in p.techs_no_turndown, ts in p.time_steps],
         m[Symbol("dvRatedProduction"*_n)][t,ts] == m[Symbol("dvSize"*_n)][t]
     )
+
+    #Added Wind. Generalize for abstract tech
+    if "Wind" in p.techs
+        @constraint(m, ["Wind", ts in p.time_steps], m[:dvSize]["Wind"] >= m[:dvRatedProduction]["Wind", ts]
+    	)
+    end
 end
