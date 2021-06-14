@@ -33,7 +33,8 @@
 #   Author: Aron Dobos @ NREL and Steven Janzou @ NREL
 #
 # #####################################################################
-import sys, struct, numpy, os
+import sys, struct, os
+#import numpy
 from ctypes import *
 
 os.environ['PATH'] = os.path.dirname(__file__) + ';' + os.environ['PATH']
@@ -282,52 +283,52 @@ if __name__ == "__main__":
         ssc.module_free(mod)
 
 
-    def run_test1():
-        wf = './WY Southern-Flat Lands.srw';
-        print(wf)
+    # def run_test1():
+    #     wf = './WY Southern-Flat Lands.srw';
+    #     print(wf)
 
-        ssc = PySSC()
-        dat = ssc.data_create()
-        setup_wind(ssc, dat);
-        ssc.data_set_string(dat, 'wind_resource_filename', wf);
-        run_windmodel(ssc, dat);
+    #     ssc = PySSC()
+    #     dat = ssc.data_create()
+    #     setup_wind(ssc, dat);
+    #     ssc.data_set_string(dat, 'wind_resource_filename', wf);
+    #     run_windmodel(ssc, dat);
 
-        ssc.data_clear(dat);
+    #     ssc.data_clear(dat);
 
-        # read a weather file for this example program
-        # and extract the data from it into a bunch of Python variables
-        # note: this weather data could come from any source
+    #     # read a weather file for this example program
+    #     # and extract the data from it into a bunch of Python variables
+    #     # note: this weather data could come from any source
 
-        # create an SSC data with a bunch of fields
-        wfd = ssc.data_create();
-        ssc.data_set_number(wfd, 'lat', 0);
-        ssc.data_set_number(wfd, 'lon', 0);
-        ssc.data_set_number(wfd, 'elev', 2088);
+    #     # create an SSC data with a bunch of fields
+    #     wfd = ssc.data_create();
+    #     ssc.data_set_number(wfd, 'lat', 0);
+    #     ssc.data_set_number(wfd, 'lon', 0);
+    #     ssc.data_set_number(wfd, 'elev', 2088);
 
-        # setup column data types: temp=1,pres=2,3=3,dir=4
-        ssc.data_set_array(wfd, 'fields', [1, 2, 4, 3, 1, 2, 4, 3, 1, 2, 4, 3, 1, 2, 4, 3]);
+    #     # setup column data types: temp=1,pres=2,3=3,dir=4
+    #     ssc.data_set_array(wfd, 'fields', [1, 2, 4, 3, 1, 2, 4, 3, 1, 2, 4, 3, 1, 2, 4, 3]);
 
-        # setup column measurement heights (meters)
-        ssc.data_set_array(wfd, 'heights', [50, 50, 50, 50, 80, 80, 80, 80, 110, 110, 110, 110, 140, 140, 140, 140]);
+    #     # setup column measurement heights (meters)
+    #     ssc.data_set_array(wfd, 'heights', [50, 50, 50, 50, 80, 80, 80, 80, 110, 110, 110, 110, 140, 140, 140, 140]);
 
-        # read in the matrix of data corresponding to fields and heights above (should have 8760 rows)
-        data = numpy.loadtxt(open(wf, "rb"), delimiter=",", skiprows=5);
-        ssc.data_set_matrix(wfd, 'data', data);
+    #     # read in the matrix of data corresponding to fields and heights above (should have 8760 rows)
+    #     data = numpy.loadtxt(open(wf, "rb"), delimiter=",", skiprows=5);
+    #     ssc.data_set_matrix(wfd, 'data', data);
 
-        # instead of setting a string weather file, simply
-        # set the table variable that contains the various fields
-        # with solar resource data
-        ssc.data_set_table(dat, 'wind_resource_data', wfd);
+    #     # instead of setting a string weather file, simply
+    #     # set the table variable that contains the various fields
+    #     # with solar resource data
+    #     ssc.data_set_table(dat, 'wind_resource_data', wfd);
 
-        # we can free the resource data table now, since
-        # the previous line copies it all into SSC
-        ssc.data_free(wfd);
+    #     # we can free the resource data table now, since
+    #     # the previous line copies it all into SSC
+    #     ssc.data_free(wfd);
 
-        # set up other PV parameters and run
-        setup_wind(ssc, dat);
-        run_windmodel(ssc, dat);
+    #     # set up other PV parameters and run
+    #     setup_wind(ssc, dat);
+    #     run_windmodel(ssc, dat);
 
-        ssc.data_free(dat)
+    #     ssc.data_free(dat)
 
 
     def setup_pv(ssc, data):
@@ -359,83 +360,83 @@ if __name__ == "__main__":
         ssc.module_free(mod)
 
 
-    def run_test2():
-        # wf = 'c:/Users/adobos/Projects/SAMnt/tests/Weather Files/user-germany-potsdam-2011-1-min-samcsv.csv' ;
-        wf = './USA NC Greensboro (TMY2).csv';
+    # def run_test2():
+    #     # wf = 'c:/Users/adobos/Projects/SAMnt/tests/Weather Files/user-germany-potsdam-2011-1-min-samcsv.csv' ;
+    #     wf = './USA NC Greensboro (TMY2).csv';
 
-        print(wf)
+    #     print(wf)
 
-        ssc = PySSC()
-        dat = ssc.data_create()
-        setup_pv(ssc, dat);
-        ssc.data_set_string(dat, 'solar_resource_file', wf);
-        run_pvwattsv5(ssc, dat);
+    #     ssc = PySSC()
+    #     dat = ssc.data_create()
+    #     setup_pv(ssc, dat);
+    #     ssc.data_set_string(dat, 'solar_resource_file', wf);
+    #     run_pvwattsv5(ssc, dat);
 
-        ssc.data_clear(dat);
+    #     ssc.data_clear(dat);
 
-        # read a weather file for this example program
-        # and extract the data from it into a bunch of Python variables
-        # note: this weather data could come from any source
-        ssc.data_set_string(dat, 'file_name', wf);
-        ssc.module_exec_simple_no_thread('wfreader', dat);
-        lat = ssc.data_get_number(dat, 'lat');
-        lon = ssc.data_get_number(dat, 'lon');
-        tz = ssc.data_get_number(dat, 'tz');
-        elev = ssc.data_get_number(dat, 'elev');
-        year = ssc.data_get_array(dat, 'year');
-        month = ssc.data_get_array(dat, 'month')
-        day = ssc.data_get_array(dat, 'day');
-        hour = ssc.data_get_array(dat, 'hour');
-        minute = ssc.data_get_array(dat, 'minute');
-        beam = ssc.data_get_array(dat, 'beam');
-        diffuse = ssc.data_get_array(dat, 'diffuse');
-        wspd = ssc.data_get_array(dat, 'wspd');
-        tdry = ssc.data_get_array(dat, 'tdry');
-        albedo = ssc.data_get_array(dat, 'albedo');
-        ssc.data_clear(dat);
+    #     # read a weather file for this example program
+    #     # and extract the data from it into a bunch of Python variables
+    #     # note: this weather data could come from any source
+    #     ssc.data_set_string(dat, 'file_name', wf);
+    #     ssc.module_exec_simple_no_thread('wfreader', dat);
+    #     lat = ssc.data_get_number(dat, 'lat');
+    #     lon = ssc.data_get_number(dat, 'lon');
+    #     tz = ssc.data_get_number(dat, 'tz');
+    #     elev = ssc.data_get_number(dat, 'elev');
+    #     year = ssc.data_get_array(dat, 'year');
+    #     month = ssc.data_get_array(dat, 'month')
+    #     day = ssc.data_get_array(dat, 'day');
+    #     hour = ssc.data_get_array(dat, 'hour');
+    #     minute = ssc.data_get_array(dat, 'minute');
+    #     beam = ssc.data_get_array(dat, 'beam');
+    #     diffuse = ssc.data_get_array(dat, 'diffuse');
+    #     wspd = ssc.data_get_array(dat, 'wspd');
+    #     tdry = ssc.data_get_array(dat, 'tdry');
+    #     albedo = ssc.data_get_array(dat, 'albedo');
+    #     ssc.data_clear(dat);
 
-        # create an SSC data with a bunch of fields
-        wfd = ssc.data_create();
-        ssc.data_set_number(wfd, 'lat', lat);
-        ssc.data_set_number(wfd, 'lon', lon);
-        ssc.data_set_number(wfd, 'tz', tz);
-        ssc.data_set_number(wfd, 'elev', elev);
+    #     # create an SSC data with a bunch of fields
+    #     wfd = ssc.data_create();
+    #     ssc.data_set_number(wfd, 'lat', lat);
+    #     ssc.data_set_number(wfd, 'lon', lon);
+    #     ssc.data_set_number(wfd, 'tz', tz);
+    #     ssc.data_set_number(wfd, 'elev', elev);
 
-        ssc.data_set_array(wfd, 'year', year);
-        ssc.data_set_array(wfd, 'month', month);
-        ssc.data_set_array(wfd, 'day', day);
-        ssc.data_set_array(wfd, 'hour', hour);
+    #     ssc.data_set_array(wfd, 'year', year);
+    #     ssc.data_set_array(wfd, 'month', month);
+    #     ssc.data_set_array(wfd, 'day', day);
+    #     ssc.data_set_array(wfd, 'hour', hour);
 
-        # note: if using an hourly TMY file with integrated/averaged
-        # values, do not set the minute column here. otherwise
-        # SSC will assume it is instantaneous data and will not adjust
-        # the sun position in sunrise and sunset hours appropriately
-        # however, if using subhourly data or instantaneous NSRDB data
-        # do explicitly provide the minute data column for sunpos calcs
+    #     # note: if using an hourly TMY file with integrated/averaged
+    #     # values, do not set the minute column here. otherwise
+    #     # SSC will assume it is instantaneous data and will not adjust
+    #     # the sun position in sunrise and sunset hours appropriately
+    #     # however, if using subhourly data or instantaneous NSRDB data
+    #     # do explicitly provide the minute data column for sunpos calcs
 
-        # ssc.data_set_array( wfd, 'minute', minute);
+    #     # ssc.data_set_array( wfd, 'minute', minute);
 
-        ssc.data_set_array(wfd, 'dn', beam);
-        ssc.data_set_array(wfd, 'df', diffuse);
-        ssc.data_set_array(wfd, 'wspd', wspd);
-        ssc.data_set_array(wfd, 'tdry', tdry);
-        ssc.data_set_array(wfd, 'albedo', albedo);
+    #     ssc.data_set_array(wfd, 'dn', beam);
+    #     ssc.data_set_array(wfd, 'df', diffuse);
+    #     ssc.data_set_array(wfd, 'wspd', wspd);
+    #     ssc.data_set_array(wfd, 'tdry', tdry);
+    #     ssc.data_set_array(wfd, 'albedo', albedo);
 
-        # instead of setting a string weather file, simply
-        # set the table variable that contains the various fields
-        # with solar resource data
-        ssc.data_set_table(dat, 'solar_resource_data', wfd);
+    #     # instead of setting a string weather file, simply
+    #     # set the table variable that contains the various fields
+    #     # with solar resource data
+    #     ssc.data_set_table(dat, 'solar_resource_data', wfd);
 
-        # we can free the resource data table now, since
-        # the previous line copies it all into SSC
-        ssc.data_free(wfd);
+    #     # we can free the resource data table now, since
+    #     # the previous line copies it all into SSC
+    #     ssc.data_free(wfd);
 
-        # set up other PV parameters and run
-        setup_pv(ssc, dat);
-        run_pvwattsv5(ssc, dat);
+    #     # set up other PV parameters and run
+    #     setup_pv(ssc, dat);
+    #     run_pvwattsv5(ssc, dat);
 
-        ssc.data_free(dat);
+    #     ssc.data_free(dat);
 
 
-    run_test1();
-    run_test2();
+    # run_test1();
+    # run_test2();
