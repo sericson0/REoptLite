@@ -55,6 +55,7 @@ using DelimitedFiles
 using Dates
 using PyCall #Added Wind for prodfactor calculations
 const pyscc = PyNULL() #From Documentation in https://github.com/JuliaPy/PyCall.jl
+const pyproj = PyNULL() #From Documentation in https://github.com/JuliaPy/PyCall.jl
 
 import MathOptInterface
 import Dates: daysinmonth, Date, isleapyear

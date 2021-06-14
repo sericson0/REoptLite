@@ -1,6 +1,6 @@
 
 # pyproj = pyimport("pyproj")
-# pyproj = pyimport_conda("pyproj", "pyproj")
+copy!(pyproj, pyimport_conda("pyproj", "pyproj"))
 
 # pth = dirname(@__FILE__)
 pushfirst!(PyVector(pyimport("sys")."path"), @__DIR__)
