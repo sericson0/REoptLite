@@ -4,7 +4,7 @@
 # pth = dirname(@__FILE__)
 pushfirst!(PyVector(pyimport("sys")."path"), @__DIR__)
 # push!(pyimport("sys")."path", pth)
-copy!(pyproj, pyimport_conda("pyproj", "pyproj"))
+copy!(pyproj, pyimport_conda("pyproj", "pyproj", "conda-forge"))
 copy!(pyscc,  pyimport("sscapi"))
 # pyscc = pyimport("sscapi")
 
