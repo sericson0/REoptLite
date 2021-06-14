@@ -1,8 +1,11 @@
 using Test, JuMP, Cbc, JSON
 
 cd(joinpath(dirname(dirname(@__FILE__)), "src"))
+cd(dirname(dirname(@__FILE__)))
 Pkg.activate(".")
+
 include("../REoptLite.jl")
+
 @testset "Wind Module" begin
     model = Model(optimizer_with_attributes(Cbc.Optimizer, "logLevel"=>0))
     data = JSON.parsefile("./scenarios/wind.json")

@@ -1,6 +1,6 @@
 
 # pyproj = pyimport("pyproj")
-pyproj = pyimport_conda("pyproj", "pyproj")
+# pyproj = pyimport_conda("pyproj", "pyproj")
 
 pth = dirname(@__FILE__)
 push!(pyimport("sys")."path", pth)
