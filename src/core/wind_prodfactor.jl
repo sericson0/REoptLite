@@ -2,9 +2,11 @@
 # pyproj = pyimport("pyproj")
 # pyproj = pyimport_conda("pyproj", "pyproj")
 
-pth = dirname(@__FILE__)
-push!(pyimport("sys")."path", pth)
-pyscc = pyimport("sscapi")
+# pth = dirname(@__FILE__)
+pushfirst!(PyVector(pyimport("sys")."path"), @__DIR__)
+# push!(pyimport("sys")."path", pth)
+copy!(pyscc, pyimport("sscapi"))
+# pyscc = pyimport("sscapi")
 
 function sam_wind_prod_factors(wind::Wind, time_steps_per_hour::Real, latitude::Float64, longitude::Float64)
     ssc_data = make_ssc(get_wind_data(wind, time_steps_per_hour, latitude, longitude)...)
