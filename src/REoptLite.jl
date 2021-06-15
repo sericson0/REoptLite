@@ -105,4 +105,8 @@ include("core/reopt_multinode.jl")
 
 include("outagesim/outage_simulator.jl")
 
+function __init__()
+    copy!(pyproj, pyimport_conda("pyproj", "pyproj", "conda-forge"))
+end
+
 end

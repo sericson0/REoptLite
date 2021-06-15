@@ -4,7 +4,7 @@
 # pth = dirname(@__FILE__)
 pushfirst!(PyVector(pyimport("sys")."path"), @__DIR__)
 # push!(pyimport("sys")."path", pth)
-copy!(pyproj, pyimport_conda("pyproj", "pyproj", "conda-forge"))
+
 copy!(pyscc,  pyimport("sscapi"))
 # pyscc = pyimport("sscapi")
 
@@ -302,7 +302,7 @@ function get_conic_coords(lat, lng)
     origin = projectLcc(origin_ll[1], origin_ll[2])
     point = projectLcc(lng, lat)
     delta = point .- origin
-    println(delta)
+    # println(delta)
     x,y = [Int(round(x / 2000)) for x in delta]
     y_max, x_max = WTK_SHAPE # dset.shape to grab shape directly  from database
     if (x<0) | (y<0) | (x>=x_max) | (y>=y_max)
