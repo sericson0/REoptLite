@@ -1,7 +1,7 @@
 using Test, JuMP, Cbc, JSON
 
 cd(joinpath(dirname(dirname(@__FILE__)), "src"))
-cd(dirname(dirname(@__FILE__)))
+# cd(dirname(dirname(@__FILE__)))
 Pkg.activate(".")
 
 include("../REoptLite.jl")

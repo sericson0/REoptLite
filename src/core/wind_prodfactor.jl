@@ -4,8 +4,10 @@
 # pth = dirname(@__FILE__)
 pushfirst!(PyVector(pyimport("sys")."path"), @__DIR__)
 # push!(pyimport("sys")."path", pth)
-
 copy!(pyscc,  pyimport("sscapi"))
+import Conda
+Conda.Conda.add("pyproj")
+copy!(pyproj, pyimport("pyproj"))
 # pyscc = pyimport("sscapi")
 
 function sam_wind_prod_factors(wind::Wind, time_steps_per_hour::Real, latitude::Float64, longitude::Float64)
