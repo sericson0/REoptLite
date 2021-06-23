@@ -55,7 +55,6 @@ using DelimitedFiles
 using Dates
 using PyCall #Added Wind for prodfactor calculations
 const pyscc = PyNULL() #From Documentation in https://github.com/JuliaPy/PyCall.jl
-const pyproj = PyNULL() #From Documentation in https://github.com/JuliaPy/PyCall.jl
 
 import MathOptInterface
 import Dates: daysinmonth, Date, isleapyear
@@ -104,9 +103,5 @@ include("core/reopt.jl")
 include("core/reopt_multinode.jl")
 
 include("outagesim/outage_simulator.jl")
-
-function __init__()
-    copy!(pyproj, pyimport_conda("pyproj", "pyproj", "conda-forge"))
-end
 
 end

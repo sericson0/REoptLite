@@ -1,14 +1,6 @@
-
-# pyproj = pyimport("pyproj")
-
-# pth = dirname(@__FILE__)
 pushfirst!(PyVector(pyimport("sys")."path"), @__DIR__)
-# push!(pyimport("sys")."path", pth)
 copy!(pyscc,  pyimport("sscapi"))
-import Conda
-Conda.Conda.add("pyproj")
-copy!(pyproj, pyimport("pyproj"))
-# pyscc = pyimport("sscapi")
+#pyproj = pyimport("pyproj") #Install python program pyproj and run this line for get_conic_coords to work
 
 function sam_wind_prod_factors(wind::Wind, time_steps_per_hour::Real, latitude::Float64, longitude::Float64)
     ssc_data = make_ssc(get_wind_data(wind, time_steps_per_hour, latitude, longitude)...)
