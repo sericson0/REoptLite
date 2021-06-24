@@ -244,8 +244,6 @@ function  wind_prod_factor(inputs::NamedTuple)
             msg = inputs.ssc.module_log(inputs.module, idx)
             idx = idx + 1
         end
-            #     msg = msg.decode("utf-8")
-            # print ("   : {}".format(msg))
     end
     inputs.ssc.module_free(inputs.wind_module)
 
@@ -321,13 +319,6 @@ function get_wind_resource_developer_api(filename, year, latitude, longitude, hu
         filename: string
             The filename where data should be written
         """
-        # s = requests.Session()
-        # n_max_tries = 5
-        # retries = Retry(total=n_max_tries,
-        #             backoff_factor=0.1,
-        #             status_forcelist=[ 500, 502, 503, 504 ])
-        #
-        # s.mount("https://", HTTPAdapter(max_retries=retries))
 
         try
             r = HTTP.get(url)
@@ -342,7 +333,6 @@ function get_wind_resource_developer_api(filename, year, latitude, longitude, hu
             end
 
         catch
-            # log.error("Wind data download timed out " + str(n_max_tries) + "times")
             error("Wind Dataset Timed Out")
         end
     return true

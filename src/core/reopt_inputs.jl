@@ -176,7 +176,6 @@ function setup_tech_inputs(s::Scenario)
         push!(gentechs, "Generator")
     end
 
-    #Added Wind
     if s.wind.max_kw > 0
         push!(techs, "Wind")
     end
@@ -206,7 +205,6 @@ function setup_tech_inputs(s::Scenario)
         setup_gen_inputs(s, max_sizes, min_sizes, existing_sizes, cap_cost_slope, om_cost_per_kw, production_factor)
     end
 
-    #Added Wind
     if "Wind" in techs
         setup_wind_inputs(s, time_steps, max_sizes, min_sizes, existing_sizes, cap_cost_slope, om_cost_per_kw, production_factor)
     end
@@ -310,7 +308,6 @@ function setup_gen_inputs(s::Scenario, max_sizes, min_sizes, existing_sizes,
     return nothing
 end
 
-#Added Wind
 function setup_wind_inputs(s::Scenario, time_steps, max_sizes, min_sizes, existing_sizes,
     cap_cost_slope, om_cost_per_kw, production_factor)
 
@@ -352,7 +349,7 @@ function setup_present_worth_factors(s::Scenario, techs::Array{String, 1}, pvtec
     if "Generator" in techs
         lvl_factor["Generator"] = 1
     end
-    #Added Wind
+    
     if "Wind" in techs
         lvl_factor["Wind"] = 1
     end

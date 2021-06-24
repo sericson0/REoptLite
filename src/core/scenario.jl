@@ -123,7 +123,6 @@ function Scenario(d::Dict)
     end
 
     #________________________________________________________________________
-    #Added Wind
     if haskey(d, "Wind")
         size_class_to_hub_height = Dict(
             "residential"=> 20,
@@ -176,7 +175,6 @@ function Scenario(d::Dict)
         electric_utility,
         financial,
         generator,
-        #Added Wind
         wind,
     )
 end
