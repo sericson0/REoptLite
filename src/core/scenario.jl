@@ -28,6 +28,7 @@
 # OF THE POSSIBILITY OF SUCH DAMAGE.
 # *********************************************************************************
 struct Scenario
+    settings::Settings
     site::Site
     pvs::Array{PV, 1}
     storage::Storage
@@ -67,8 +68,12 @@ end
 ```
 """
 function Scenario(d::Dict)
-    # TODO add validate! functions for each input struct
-
+    if haskey(d, "Settings")
+        settings = Settings(;dictkeys_tosymbols(d["Settings"])...)
+    else
+        settings = Settings()
+    end
+    
     site = Site(;dictkeys_tosymbols(d["Site"])...)
 
     pvs = PV[]
@@ -110,7 +115,9 @@ function Scenario(d::Dict)
         storage = Storage(storage_dict, financial)
     end
 
-    electric_load = ElectricLoad(; dictkeys_tosymbols(d["ElectricLoad"])...)
+    electric_load = ElectricLoad(; dictkeys_tosymbols(d["ElectricLoad"])...,
+                                   latitude=site.latitude, longitude=site.longitude
+                                )
 
     electric_tariff = ElectricTariff(; dictkeys_tosymbols(d["ElectricTariff"])...,
                                        year=electric_load.year
@@ -168,12 +175,13 @@ function Scenario(d::Dict)
     #__________________________________________________________________________
 
     return Scenario(
-        site,
-        pvs,
-        storage,
-        electric_tariff,
-        electric_load,
-        electric_utility,
+        settings,
+        site, 
+        pvs, 
+        storage, 
+        electric_tariff, 
+        electric_load, 
+        electric_utility, 
         financial,
         generator,
         #Added Wind
