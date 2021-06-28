@@ -52,7 +52,6 @@ using REoptLite
     @test all(x == 0.0 for x in results["PV"]["year_one_to_load_series_kw"][1:744])
 end
 
-
 @testset "Solar and Storage" begin
     model2 = Model(optimizer_with_attributes(Cbc.Optimizer, "logLevel"=>0))
     results2 = run_reopt(model2, "./scenarios/pv_storage.json")
@@ -69,6 +68,15 @@ end
     @test results["Generator"]["size_kw"] ≈ 8.12 atol=0.01
     @test (sum(results["Generator"]["year_one_to_load_series_kw"][i] for i in 1:9) + 
            sum(results["Generator"]["year_one_to_load_series_kw"][i] for i in 13:8760)) == 0
+end
+
+@testset "Wind Module" begin
+    model = Model(optimizer_with_attributes(Cbc.Optimizer, "logLevel"=>0))
+    results = run_reopt(model, "./scenarios/wind.json")
+
+    @test results["Wind"]["size_kw"] ≈ 3746.4 atol=0.01 
+    @test results["Financial"]["lcc_us_dollars"] ≈ 8577921 rtol=1e3 
+    @test results["Financial"]["net_capital_costs_plus_om_us_dollars"] ≈ 8.56364e6 rtol=1e3
 end
 
 ## much too slow with Cbc (killed after 8 hours)
