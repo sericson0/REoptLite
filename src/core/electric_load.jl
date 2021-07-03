@@ -41,8 +41,11 @@
         critical_load_pct::Real = 0.5
     )
 
-Must provide either `loads_kw` or [`doe_reference_name` and `city`]. When using the 
-[`doe_reference_name` and `city`] option, choose `city` from one of the 
+Must provide either `loads_kw` or [`doe_reference_name` and `city`] or `doe_reference_name`. 
+
+When only `doe_reference_name` is provided the `Site.latitude` and `Site.longitude` are used to look up the ASHRAE climate zone, which determines the appropriate DoE Commercial Reference Building profile.
+
+When using the [`doe_reference_name` and `city`] option, choose `city` from one of the 
 cities used to represent the ASHRAE climate zones:
 - Albuquerque
 - Atlanta
@@ -459,14 +462,15 @@ function BuiltInElectricLoad(
         error("buildingtype $(buildingtype) not in $(default_buildings).")
     end
 
-    if isnothing(annual_kwh)
-        annual_kwh = annual_loads[city][lowercase(buildingtype)]
-    end
-     # TODO implement BuiltInElectricLoad scaling based on monthly_totals_kwh
-
     if isempty(city)
         city = find_ashrae_zone_city(latitude, longitude)
     end
+
+    if isnothing(annual_kwh)
+        annual_kwh = annual_loads[city][lowercase(buildingtype)]
+    end
+    # TODO implement BuiltInElectricLoad scaling based on monthly_totals_kwh
+
     profile_path = joinpath(lib_path, string("Load8760_norm_" * city * "_" * buildingtype * ".dat"))
     normalized_profile = vec(readdlm(profile_path, '\n', Float64, '\n'))
 

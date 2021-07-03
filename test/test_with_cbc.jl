@@ -77,6 +77,14 @@ end
     @test results["Wind"]["size_kw"] ≈ 3746.4 atol=0.01 
     @test results["Financial"]["lcc_us_dollars"] ≈ 8577921 rtol=1e3 
     @test results["Financial"]["net_capital_costs_plus_om_us_dollars"] ≈ 8.56364e6 rtol=1e3
+
+# TODO test MPC with outages
+@testset "MPC" begin
+    model = Model(optimizer_with_attributes(Cbc.Optimizer, "logLevel"=>0))
+    r = run_mpc(model, "./scenarios/mpc.json")
+    @test maximum(r["ElectricUtility"]["to_load_series_kw"][1:15]) <= 98.0 
+    @test maximum(r["ElectricUtility"]["to_load_series_kw"][16:24]) <= 97.0
+    @test sum(r["PV"]["to_grid_series_kw"]) ≈ 0
 end
 
 ## much too slow with Cbc (killed after 8 hours)
